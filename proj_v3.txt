@@ -1,0 +1,67 @@
+p=2;
+p_bo=2;
+a=2^p;
+a_bo=2^p_bo;
+delta=1/a;
+N=2^(p+p_bo);
+delta_s=(2*pi)/a_bo;
+miu=0;
+sigema=1
+x_1=miu-delta*(N/2-1);
+
+
+d=matrix(0,N,N)
+for (j in 1:N){
+    for (k in 1:N){
+        if(j==k){
+            d[j,k]=1
+		}else{
+            d[j,k]=0       
+        }
+	}		   
+}
+
+v<-matrix(0,1,N)
+for(j in 1:N){
+	v[j]=1-(d[j,1]+d[j,N])/2
+}
+             
+
+bf<-function(x){ 
+	if((-3/2)<=x&&x<=(-1/2)){
+		kk<-x^2+3*x/2+9/8
+	}else if((-1/2)<=x&&x<=1/2){
+		kk<-3/4-x^2
+	}else if(1/2<=x&&x<=3/2){
+		kk<-x^2-3*x/2+9/8
+	}
+	return(kk)
+}
+      
+F1<-function(s){
+	aa<-(480*(sin(s/4))^3)/(((s/2)^3)*(26*cos(s/2)+cos(2*s/2)+33))
+	return(aa)
+}    
+       
+
+F2<-function(s){
+	bb<-exp((complex(1,0,1)*miu*s)-(sigema*s^2)/2)
+	return(bb)
+}
+
+
+FF<-function(x){
+F=0
+for(j in N){
+	for(n in N){
+        F=F+((a^(-1/2)/pi)*Re(exp(-complex(1,0,1)*((2*pi)/N))*(n-1)*(j-1)))*
+            exp(-complex(1,0,1)*x_1*((j-1)*delta_s)*F2((j-1)*delta_s)*F1(((j-1)*delta_s)/a)*v[j]*delta_s)*bf(x)
+		}
+	}
+	return(F)
+}
+FF(x)
+
+x=runif(100)
+
+plot(x,FF(x))
